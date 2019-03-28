@@ -68,5 +68,52 @@ public class Sonidos {
         };
         hilo.start();
     }
+    public static void gameOver() {
+        file = new File(".");
+        ruta = file.getAbsolutePath();
+        Thread hilo = new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(500);
+                    FileInputStream fis;
+                    Player player;
+                    try {
+                        fis = new FileInputStream(ruta + "/src/sonidos/gameover.mp3");
+                    } catch (FileNotFoundException e) {
+                        fis = new FileInputStream(ruta + "/complementos/gameover.mp3");
+                    }
+                    BufferedInputStream bis = new BufferedInputStream(fis);
+                    player = new Player(bis);
+                    player.play();
+                    stop();
+                } catch (InterruptedException | JavaLayerException | FileNotFoundException e) {
+                }
+            }
+        };
+        hilo.start();
+    }
+        public static void sonidoPrincipal() {
+        file = new File(".");
+        ruta = file.getAbsolutePath();
+        Thread hilo = new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(500);
+                    FileInputStream fis;
+                    Player player;
+                    try {
+                        fis = new FileInputStream(ruta + "/src/sonidos/espacio.mp3");
+                    } catch (FileNotFoundException e) {
+                        fis = new FileInputStream(ruta + "/complementos/espacio.mp3");
+                    }
+                    BufferedInputStream bis = new BufferedInputStream(fis);
+                    player = new Player(bis);
+                    player.play();                   
+                } catch (InterruptedException | JavaLayerException | FileNotFoundException e) {
+                }
+            }
+        };
+        hilo.start();
+    }
 
 }

@@ -26,8 +26,8 @@ import javax.swing.Timer;
 public class VentanaJuego extends javax.swing.JFrame {
 
     public static Label lbl_puntaje = new Label(); //para el puntaje
-    static int ANCHOPANTALLA = 600;
-    static int ALTOPANTALLA = 500;
+    static int ANCHOPANTALLA = 800;
+    static int ALTOPANTALLA = 600;
 
     //numero de marcianos que van a aparecer
     int filas = 8;
@@ -48,6 +48,7 @@ public class VentanaJuego extends javax.swing.JFrame {
     //imagen para cargar el spritesheet con todos los sprites del juego
     BufferedImage plantilla = null;
     Image[][] imagenes;
+    Image fondo;
 
     Timer temporizador = new Timer(10, new ActionListener() {
         @Override
@@ -61,18 +62,23 @@ public class VentanaJuego extends javax.swing.JFrame {
      */
     public VentanaJuego() {
         initComponents();
+        sonido.sonidoPrincipal();
         setTitle("Space Invaders");
+        setSize(ANCHOPANTALLA, ALTOPANTALLA);
         setLocationRelativeTo(null);
+        try {
+            fondo = ImageIO.read(getClass().getResource("/imagenes/fondo.jpeg"));
+        } catch (IOException ex) {
+        }
         Font font1;
         Color color1;
         Color color2;
         font1 = new Font("Courier New", Font.BOLD, 40);
         color1 = new Color(124, 252, 0);
-        color2 = new Color(0, 0, 0);
         lbl_puntaje.setFont(font1);
         lbl_puntaje.setForeground(color1);
-        lbl_puntaje.setBackground(color2);
-        lbl_puntaje.setBounds(450, 350, 100, 45);
+        lbl_puntaje.setBackground(Color.black);
+        lbl_puntaje.setBounds(200, 0, 60, 45);
         lbl_puntaje.setText("0");
         jPanel1.add(lbl_puntaje);
         //para cargar el archivo de imagenes: 
@@ -85,7 +91,6 @@ public class VentanaJuego extends javax.swing.JFrame {
         imagenes = cargaImagenes("/imagenes/invaders2.png", 5, 4, 64, 64, 2);
 
         miDisparo.imagen = imagenes[3][2];
-        setSize(ANCHOPANTALLA, ALTOPANTALLA);
         buffer = (BufferedImage) jPanel1.createImage(ANCHOPANTALLA, ALTOPANTALLA);
         buffer.createGraphics();
 
@@ -163,7 +168,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         Graphics2D g2 = (Graphics2D) buffer.getGraphics();
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, ANCHOPANTALLA, ALTOPANTALLA);
-
+        g2.drawImage(fondo, 0, 0, null);
         ///////////////////////////////////////////////////////
         //redibujaremos aquí cada elemento
         g2.drawImage(miDisparo.imagen, miDisparo.x, miDisparo.y, null);
@@ -207,6 +212,13 @@ public class VentanaJuego extends javax.swing.JFrame {
                         puntaje = puntaje + 10;
                         lbl_puntaje.setText("" + puntaje);
                     }
+                    if (rectanguloMarciano.intersects(miNave.x, miNave.y, miNave.imagen.getWidth(null), miNave.imagen.getHeight(null))) {
+                        System.out.println("PERDISTE");
+                        sonido.gameOver();
+                        GameOver gameOver = new GameOver();
+                        gameOver.setVisible(true);
+                        dispose();
+                    }
                 }
             }
         }
@@ -216,6 +228,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 listaMarcianos[i][j].setvX(listaMarcianos[i][j].getvX() * -1);
+                listaMarcianos[i][j].y += 15;
             }
         }
     }
